@@ -58,7 +58,7 @@ public class ShoppingCartService {
 	// Task4
 	public BigDecimal calculatesPriceWithConfiguration(ShoppingCart shoppingCart, Integer discountPercentage) {
 
-		Function<Product, BigDecimal> discountCategoryFunction = (product) -> {
+		Function<Product, BigDecimal> discountWithConfigurationFunction = (product) -> {
 
 			int totalCategoryProductsCount = shoppingCart.getProducts().stream()
 					.filter(eachProduct -> eachProduct.getCategory().equals(product.getCategory()))
@@ -74,7 +74,7 @@ public class ShoppingCartService {
 			return discount != null ? productPrice.subtract(discount) : productPrice;
 		};
 
-		return shoppingCart.getProducts().stream().map(discountCategoryFunction).reduce(BigDecimal::add)
+		return shoppingCart.getProducts().stream().map(discountWithConfigurationFunction).reduce(BigDecimal::add)
 				.orElse(BigDecimal.ZERO);
 	}
 

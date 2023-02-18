@@ -52,31 +52,32 @@ public class ShoppingCartServiceTest {
 	@Test
 	public void calculatesPriceWithConfiguration() {
 
-		String teaPrice = null;
-		String coffeePrice = null;
-		String cheesePrice = null;
-		String discountPercentage = null;
-
-		Properties properties = new Properties();
-		// InputStream inputStream = null;
-
 		try (InputStream inputStream = new FileInputStream("application.properties");) {
+			Properties properties = new Properties();
 			properties.load(inputStream);
 
 			// get the property values
-			teaPrice = properties.getProperty("product.price.tea");
-			coffeePrice = properties.getProperty("product.price.coffee");
-			cheesePrice = properties.getProperty("product.price.cheese");
-			discountPercentage = properties.getProperty("discount.percentage");
+			String teaPrice = properties.getProperty("tea.price.per.unit");
+			String coffeePrice = properties.getProperty("coffee.price.per.unit");
+			String cheesePrice = properties.getProperty("cheese.price.per.unit");
+			String discountPercentage = properties.getProperty("discount.percentage");
 
-			ShoppingCart cart = new ShoppingCart(
-					Arrays.asList(new Product("Tea", new BigDecimal(teaPrice), 2, "Drinks"),
-							new Product("Coffee", new BigDecimal(coffeePrice), 2, "Drinks"),
-							new Product("Cheese", new BigDecimal(cheesePrice), 2, "Food")));
+			if (teaPrice != null && !teaPrice.isEmpty() && coffeePrice != null && !coffeePrice.isEmpty()
+					&& cheesePrice != null && !cheesePrice.isEmpty() && discountPercentage != null
+					&& !discountPercentage.isEmpty()) {
 
-			BigDecimal result = service.calculatesPriceWithConfiguration(cart, Integer.valueOf(discountPercentage));
+				ShoppingCart cart = new ShoppingCart(
+						Arrays.asList(new Product("Tea", new BigDecimal(teaPrice), 2, "Drinks"),
+								new Product("Coffee", new BigDecimal(coffeePrice), 2, "Drinks"),
+								new Product("Cheese", new BigDecimal(cheesePrice), 2, "Food")));
 
-			Assertions.assertEquals(result, BigDecimal.valueOf(31.84));
+				BigDecimal result = service.calculatesPriceWithConfiguration(cart, Integer.valueOf(discountPercentage));
+
+				Assertions.assertEquals(result, BigDecimal.valueOf(31.84));
+				
+			} else {
+				System.err.print("Required configuraiton is not available.");
+			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();

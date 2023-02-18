@@ -55,4 +55,27 @@ public class ShoppingCartService {
 				.orElse(BigDecimal.ZERO);
 	}
 
+	// Task4
+	public BigDecimal calculatesPriceWithConfiguration(ShoppingCart shoppingCart, Integer discountPercentage) {
+
+		Function<Product, BigDecimal> discountCategoryFunction = (product) -> {
+
+			int totalCategoryProductsCount = shoppingCart.getProducts().stream()
+					.filter(eachProduct -> eachProduct.getCategory().equals(product.getCategory()))
+					.map(eachProduct -> eachProduct.getQuantity()).reduce(Integer::sum).orElse(0);
+
+			BigDecimal discount = null;
+			BigDecimal productPrice = product.getPricePerUnit().multiply(BigDecimal.valueOf(product.getQuantity()));
+
+			if (totalCategoryProductsCount > 3) {
+				discount = product.getPricePerUnit().multiply(BigDecimal.valueOf(product.getQuantity()))
+						.multiply(BigDecimal.valueOf(discountPercentage)).divide(BigDecimal.valueOf(100));
+			}
+			return discount != null ? productPrice.subtract(discount) : productPrice;
+		};
+
+		return shoppingCart.getProducts().stream().map(discountCategoryFunction).reduce(BigDecimal::add)
+				.orElse(BigDecimal.ZERO);
+	}
+
 }

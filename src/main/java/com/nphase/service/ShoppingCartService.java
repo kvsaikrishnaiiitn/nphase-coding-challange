@@ -61,7 +61,8 @@ public class ShoppingCartService {
 		Function<Product, BigDecimal> discountWithConfigurationFunction = (product) -> {
 
 			int totalCategoryProductsCount = shoppingCart.getProducts().stream()
-					.filter(eachProduct -> eachProduct.getCategory().equals(product.getCategory()))
+					.filter(eachProduct -> eachProduct.getCategory() != null
+							&& eachProduct.getCategory().equals(product.getCategory()))
 					.map(eachProduct -> eachProduct.getQuantity()).reduce(Integer::sum).orElse(0);
 
 			BigDecimal discount = null;

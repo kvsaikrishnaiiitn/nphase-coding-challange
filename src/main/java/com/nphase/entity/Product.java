@@ -9,10 +9,7 @@ public class Product {
 	private final String category;
 
 	public Product(String name, BigDecimal pricePerUnit, int quantity) {
-		this.name = name;
-		this.pricePerUnit = pricePerUnit;
-		this.quantity = quantity;
-		this.category = null;
+		this(name, pricePerUnit, quantity, null);
 	}
 
 	public Product(String name, BigDecimal pricePerUnit, int quantity, String category) {
